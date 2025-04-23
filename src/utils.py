@@ -1,9 +1,11 @@
 from datetime import datetime
+from pandas import DataFrame
+import pandas as pd
 
 
-def time_greeting(datetime_string):
+def time_greeting():
     '''
-        Функция для страницы «Главная» принимает на вход строку с датой и временем в формате  YYYY-MM-DD HH:MM:SS
+        1. Функция для страницы «Главная» принимает на вход строку с датой и временем в формате  YYYY-MM-DD HH:MM:SS
         и возвращает в зависимости от времени суток приветствие: Доброе утро / Добрый день / Добрый вечер / Доброй ночи
     '''
 
@@ -19,19 +21,85 @@ def time_greeting(datetime_string):
         return "Доброй ночи"
 
 
-def get_data_period(datetime_string: str, data_format = "%Y-%m-%d %H:%M:%S") -> list[str]:
+def get_data_period(datetime_string: str, data_format="%Y-%m-%d %H:%M:%S") -> list[str]:
     '''
-        Функция получения периода даты. Если дата на вход подана дата: 20.05.2020,то данные для анализа
-        будут в диапазоне 01.05.2020 - 20.05.2020.я
+        2. Функция получения периода даты. Если дата на вход подана дата: 20.05.2020,то данные для анализа
+        будут в диапазоне 01.05.2020 - 20.05.2020.
         Дополнительно: преобразование даты из "%Y-%m-%d %H:%M:%S" в "%d.%m.%Y %H:%M:%S" (согласно формату даты в Excel)
     '''
 
-    dt = datetime.strptime(datetime_string, "%Y-%m-%d %H:%M:%S")
-    start = dt.replace(day=1)
+    today_day_by_period = datetime.strptime(datetime_string, "%Y-%m-%d %H:%M:%S")
+    first_day_by_period = today_day_by_period.replace(day=1)
 
-    return [start.strftime("%d.%m.%Y %H:%M:%S"), dt.strftime("%d.%m.%Y %H:%M:%S") ]
+    return [
+        first_day_by_period.strftime("%d.%m.%Y %H:%M:%S"),
+        today_day_by_period.strftime("%d.%m.%Y %H:%M:%S")
+    ]
 
 
-datetime_string = "2025-04-23 18:16:00"  # Строка для теста Функции
-print(time_greeting(datetime_string))  # Проверка работы функции приветствия относительно текущего времени пользователя
-print(get_data_period(datetime_string))  # Проверка работы Функции получения периода даты
+def get_path_to_file_and_period(path_to_file: str, time_period: list) -> DataFrame:
+    '''
+        3. Функция принимает путь к Excel файлу и полученный период из ф-ии get_data_period
+        и осуществляет возврат таблицы в заданном периоде
+    '''
+    # Читаем данные построчно
+    df = pd.read_excel(path_to_file, sheet_name="Отчет по операциям")
+
+    # Преобразуем строки колонки "Дата операции" в формат даты
+    df["Дата операции"] = pd.to_datetime(df["Дата операции"], dayfirst=True)
+
+    # Задаём начальный день периода (индекс 0 из списка периода и приводим к формату "%d.%m.%Y %H:%M:%S)
+    start_date = datetime.strptime(time_period[0], "%d.%m.%Y %H:%M:%S")
+    # Задаём конечный день периода  (индекс 1 из списка периода и приводим к формату "%d.%m.%Y %H:%M:%S)
+    end_date = datetime.strptime(time_period[1], "%d.%m.%Y %H:%M:%S")
+
+    # фильтруем ип получаем данные в filtered_df по колонке "Дата операции" с 1-ого по крайний день
+    filtered_df = df[
+        (df["Дата операции"] >= start_date) &
+        (df["Дата операции"] <= end_date)
+        ]
+    # Сортируем полученные данные из filtered_df по возрастанию
+    sorted_df = filtered_df.sort_values(by="Дата операции", ascending=True)
+
+    return sorted_df
+
+
+def get_cerds_with_spend(sorded_df: DataFrame) -> list[dict]:
+    '''
+        4. Функция принимает DataFrame и возвращает список карт с расходами
+    '''
+    card_expenses_transactions = []
+    card_sorted = sorded_df[
+        [
+            "Номер карты",
+            "Сумма операции",
+            "Кэшбэк",
+            "Сумма операции с округлением",
+        ]
+    ]
+    for index, row in card_sorted.iterrows():
+        if row["Сумма операции"] < 0:
+            last_digits = str(row["Номер карты"]).replace("*", '')
+            total_spent = row["Сумма операции с округлением"]
+            cashback = total_spent // 100
+            row = {
+                "last_digits": last_digits,
+                "total_spent": total_spent,
+                "cashback": cashback
+            }
+            card_expenses_transactions.append(row)
+
+    return card_expenses_transactions
+
+
+
+
+
+
+
+
+
+# print(time_greeting())  # Проверка работы функции приветствия относительно текущего времени пользователя
+# datetime_string = "2018-04-23 18:16:00"  # Строка для теста Функции
+# print(get_data_period(datetime_string))  # Проверка работы Функции получения периода даты
+# print(get_path_to_file_and_period('../data/operations.xlsx',['01.04.2018 18:16:00', '23.04.2018 18:16:00']))
