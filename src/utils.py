@@ -81,7 +81,7 @@ def get_cerds_with_spend(sorded_df: DataFrame) -> list[dict]:
         if row["Сумма операции"] < 0:
             last_digits = str(row["Номер карты"]).replace("*", '')
             total_spent = row["Сумма операции с округлением"]
-            cashback = total_spent // 100
+            cashback = float(total_spent) // 100
             row = {
                 "last_digits": last_digits,
                 "total_spent": total_spent,
@@ -92,14 +92,30 @@ def get_cerds_with_spend(sorded_df: DataFrame) -> list[dict]:
     return card_expenses_transactions
 
 
+def get_top_transactions(sorted_df: DataFrame, get_top):
+    """
+        5. Функция принимает DataFrame и возвращает get_top топ-транзакций по сумме платежа
+    """
+    top_pay_transactions = []
+    sorted_pay_df = sorted_df.sort_values(by="Сумма операции", ascending=False)
+    top_transactions = sorted_pay_df.head(get_top)
+    top_transactions_sorted = top_transactions[
+        [
+            "Дата платежа",
+            "Сумма операции",
+            "Категория",
+            "Описание"
+        ]
+    ]
 
+    for i, row in top_transactions_sorted.iterrows():
+        transaction = {
+          "date": f'{row["Дата платежа"]}',
+          "amount": f'{row["Сумма операции"]}',
+          "category": f'{row["Категория"]}',
+          "description": f'{row["Описание"]}'
+        }
+        top_pay_transactions.append(transaction)
 
+    return top_pay_transactions
 
-
-
-
-
-# print(time_greeting())  # Проверка работы функции приветствия относительно текущего времени пользователя
-# datetime_string = "2018-04-23 18:16:00"  # Строка для теста Функции
-# print(get_data_period(datetime_string))  # Проверка работы Функции получения периода даты
-# print(get_path_to_file_and_period('../data/operations.xlsx',['01.04.2018 18:16:00', '23.04.2018 18:16:00']))

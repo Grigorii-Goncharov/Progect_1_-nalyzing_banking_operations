@@ -1,7 +1,6 @@
 import json
-from config import PATH_TO_EXCEL
 
-from utils import time_greeting, get_data_period, get_path_to_file_and_period, get_cerds_with_spend
+from utils import time_greeting, get_data_period, get_path_to_file_and_period, get_cerds_with_spend, get_top_transactions
 from typing import Dict, Any
 
 def main_info(datetime_string: str) -> Dict[str, Any]:
@@ -21,7 +20,7 @@ def main_info(datetime_string: str) -> Dict[str, Any]:
   cards = get_cerds_with_spend(sorded_df)
 
   # ШАГ 3: Вывод ТОП 5 транзакций по сумме платежа за период
-  top_transactions = get_top_transacrions(sorded_df, 5 )
+  top_pay_transactions = get_top_transactions(sorded_df, 5 )
 #
 # currensies = get_currency(PATH_TO_JSON)
 
@@ -31,7 +30,7 @@ def main_info(datetime_string: str) -> Dict[str, Any]:
   data = {
     "greeting": greeting,
     "cards": cards,
-     "top_transactions": top_transactions,
+    "top_transactions": top_pay_transactions
     # "currency_rates": currensies,
     # "stock_prices": stoks,
   }
