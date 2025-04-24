@@ -1,7 +1,6 @@
 import json
-
-from utils import time_greeting, get_data_period, get_path_to_file_and_period, get_cerds_with_spend, get_top_transactions
 from typing import Dict, Any
+from utils import time_greeting, get_data_period, get_path_to_file_and_period, get_cerds_with_spend, get_top_transactions, get_currency
 
 def main_info(datetime_string: str) -> Dict[str, Any]:
   '''
@@ -21,8 +20,9 @@ def main_info(datetime_string: str) -> Dict[str, Any]:
 
   # ШАГ 3: Вывод ТОП 5 транзакций по сумме платежа за период
   top_pay_transactions = get_top_transactions(sorded_df, 5 )
-#
-# currensies = get_currency(PATH_TO_JSON)
+
+  # ШАГ 4: Вывод курса валют
+  currensies = get_currency('../data/user_settings.json')
 
 # stoks = get_stoks()
 
@@ -30,8 +30,8 @@ def main_info(datetime_string: str) -> Dict[str, Any]:
   data = {
     "greeting": greeting,
     "cards": cards,
-    "top_transactions": top_pay_transactions
-    # "currency_rates": currensies,
+    "top_transactions": top_pay_transactions,
+    "currency_rates": currensies
     # "stock_prices": stoks,
   }
 

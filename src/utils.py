@@ -1,6 +1,20 @@
+import json
 from datetime import datetime
 from pandas import DataFrame
 import pandas as pd
+import json
+from dotenv import load_dotenv
+import requests
+import os
+
+URL = "https://api.apilayer.com/exchangerates_data/convert"
+
+# Загрузка переменных из .env-файла
+load_dotenv()
+
+# Получаем API-ключ из переменных окружения
+API_KEY = os.getenv("API_KEY")  # Убедитесь, что в .env есть строка API_KEY=ваш_ключ
+headers = {"apikey": API_KEY}
 
 
 def time_greeting():
@@ -119,3 +133,39 @@ def get_top_transactions(sorted_df: DataFrame, get_top):
 
     return top_pay_transactions
 
+
+def get_currency(path_to_json: str) -> list[dict]:
+    """
+        6. Функция принимает путь к json файлу и полученный и возвращает курс валют
+    """
+    currency_rates = []
+    with open (path_to_json, "r", encoding="utf8") as file:
+        data = json.load(file)
+        # обращение к ключу "user_currencies" для получения списка значений, хранящейся в нём валюты
+        currencies = data["user_currencies"]
+        for currency in currencies:
+           params = {
+               "amount" : 1,
+               "from" : currency,
+               "to" : "RUB"
+           }
+           # Работа с API
+           headers = {
+               "apikey": API_KEY
+           }
+
+           # отправляем по HTTP GET-запрос к указанному URL с заданными параметрами (params) и заголовками (headers),
+           response = requests.get(URL, headers=headers, params=params)
+
+           # сохраняем статус-код ответа в переменную status_code
+           status_code = response.status_code
+           if status_code == 200:
+               result = response.json()
+               currency_code_response = result["query"]["from"]
+               currency_amount = round(result["result"], 2)
+               currency_rates.append(
+                   {
+               "currency" : currency_code_response,
+               "rate" : currency_amount
+           })
+    return currency_rates
