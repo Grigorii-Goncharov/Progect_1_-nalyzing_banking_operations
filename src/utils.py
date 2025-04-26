@@ -6,8 +6,6 @@ import json
 from dotenv import load_dotenv
 import requests
 import os
-import yfinance as yf
-import time
 
 URL = "https://api.apilayer.com/exchangerates_data/convert"
 URL_2 = "https://api.twelvedata.com/price"
@@ -16,10 +14,10 @@ URL_2 = "https://api.twelvedata.com/price"
 load_dotenv()
 
 # Получаем API-ключ из переменных окружения
-API_KEY = os.getenv("API_KEY")  # Убедитесь, что в .env есть строка API_KEY=ваш_ключ
+API_KEY = os.getenv("API_KEY")  # В .env есть строка API_KEY=ваш_ключ
 headers = {"apikey": API_KEY}
 
-API_KEY_2 = os.getenv("API_KEY_2")  # Убедитесь, что в .env есть строка API_KEY=ваш_ключ
+API_KEY_2 = os.getenv("API_KEY_2")  # В .env есть строка API_KEY_2=ваш_ключ
 
 def time_greeting():
     '''
@@ -186,11 +184,14 @@ def get_stock(path_to_json: str) -> list[dict]:
         for stock in stocks:
             symbol = stock
             params = {'symbol': symbol, 'apikey': API_KEY_2}
+
+            # отправляем по HTTP GET-запрос к указанному URL с заданными параметрами (params) и заголовками (headers),
             response = requests.get(URL_2, params=params)
+
+            # сохраняем статус-код ответа в переменную status_code
             status_code = response.status_code
             if status_code == 200:
                 data = response.json()
-
                 stock_rates.append({
                     "stock": symbol,
                     "price": float(data["price"])

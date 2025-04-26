@@ -32,8 +32,8 @@ def main_info(datetime_string: str) -> Dict[str, Any]:
     "greeting": greeting,
     "cards": cards,
     "top_transactions": top_pay_transactions,
-    #"currency_rates": currensies,
-    "stock_prices": stoks,
+    #currency_rates": currensies,
+    #"stock_prices": stoks
   }
 
   json_data = json.dumps(data, ensure_ascii=False, indent=4)
