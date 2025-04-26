@@ -16,7 +16,7 @@
 1.  **Клонируйте репозиторий:**
 
     ```
-    git clone git@github.com:Grigorii-Goncharov/lsn_git_homework.git
+    git clone git@github.com:Grigorii-Goncharov/Progect_1_-nalyzing_banking_operations.git
     ```
 
 2.  **Перейдите в папку проекта:**
@@ -33,7 +33,6 @@
     poetry add --group lint mypy
     poetry add --group lint black
     poetry add --group lint isort
-    poetry add --group dev pytest
     poetry add --group dev pytest
     poetry add pandas 
     ```
