@@ -6,8 +6,11 @@ import json
 from dotenv import load_dotenv
 import requests
 import os
+import yfinance as yf
+import time
 
 URL = "https://api.apilayer.com/exchangerates_data/convert"
+URL_2 = "https://api.twelvedata.com/price"
 
 # Загрузка переменных из .env-файла
 load_dotenv()
@@ -16,6 +19,7 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")  # Убедитесь, что в .env есть строка API_KEY=ваш_ключ
 headers = {"apikey": API_KEY}
 
+API_KEY_2 = os.getenv("API_KEY_2")  # Убедитесь, что в .env есть строка API_KEY=ваш_ключ
 
 def time_greeting():
     '''
@@ -78,7 +82,7 @@ def get_path_to_file_and_period(path_to_file: str, time_period: list) -> DataFra
     return sorted_df
 
 
-def get_cerds_with_spend(sorded_df: DataFrame) -> list[dict]:
+def get_cards_with_spend(sorded_df: DataFrame) -> list[dict]:
     '''
         4. Функция принимает DataFrame и возвращает список карт с расходами
     '''
@@ -169,3 +173,29 @@ def get_currency(path_to_json: str) -> list[dict]:
                "rate" : currency_amount
            })
     return currency_rates
+
+
+def get_stock(path_to_json: str) -> list[dict]:
+    """ 7. Функция принимает на вход path_to_json и возвращает курс Акций"""
+
+    stock_rates = []
+
+    with open(path_to_json, "r", encoding="utf-8") as file:
+        data = json.load(file)
+        stocks = data["user_stocks"]
+        for stock in stocks:
+            symbol = stock
+            params = {'symbol': symbol, 'apikey': API_KEY_2}
+            response = requests.get(URL_2, params=params)
+            status_code = response.status_code
+            if status_code == 200:
+                data = response.json()
+
+                stock_rates.append({
+                    "stock": symbol,
+                    "price": float(data["price"])
+                })
+
+    return stock_rates
+
+
