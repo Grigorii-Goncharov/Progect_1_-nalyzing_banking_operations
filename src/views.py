@@ -3,8 +3,15 @@ import logging
 from typing import Any, Dict
 
 from config import PATH_TO_EXCEL, PATH_TO_JSON
-from utils import (get_cards_with_spend, get_currency, get_data_period, get_path_to_file_and_period, get_stock,
-                   get_top_transactions, time_greeting)
+from utils import (
+    get_cards_with_spend,
+    get_currency,
+    get_data_period,
+    get_path_to_file_and_period,
+    get_stock,
+    get_top_transactions,
+    time_greeting,
+)
 
 logger = logging.getLogger(__name__)
 # Настройка обработчиков
