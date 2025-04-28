@@ -7,17 +7,6 @@ from typing import Callable
 
 import pandas as pd
 
-# logging.basicConfig(
-#     level=logging.DEBUG,
-#     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-#     filename="../logs/reports.log",
-#     filemode="w",
-#     encoding="utf-8",
-# )
-#
-# # Создаем логеры для различных компонентов программы
-# logger = logging.getLogger("reports")
-
 # Получаем путь к текущему скрипту
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -46,7 +35,7 @@ logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)
 
 
-def spending_by_category(date: str = None, category: str = None) -> Callable: # type: ignore
+def spending_by_category(date: str = None, category: str = None) -> Callable:  # type: ignore
     """Декоратор для фильтрации транзакций по категории и дате"""
 
     def decorator(func):

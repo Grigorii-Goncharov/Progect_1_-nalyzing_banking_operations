@@ -4,8 +4,15 @@ import os
 from typing import Any, Dict
 
 from config import PATH_TO_EXCEL, PATH_TO_JSON
-from src.utils import (get_cards_with_spend, get_currency, get_data_period, get_path_to_file_and_period, get_stock,
-                       get_top_transactions, time_greeting)
+from src.utils import (
+    get_cards_with_spend,
+    get_currency,
+    get_data_period,
+    get_path_to_file_and_period,
+    get_stock,
+    get_top_transactions,
+    time_greeting,
+)
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 

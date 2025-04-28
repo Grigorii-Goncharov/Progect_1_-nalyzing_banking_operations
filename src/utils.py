@@ -2,21 +2,11 @@ import json
 import logging
 import os
 from datetime import datetime
+
 import pandas as pd
 import requests
 from dotenv import load_dotenv
 from pandas import DataFrame
-
-# logging.basicConfig(
-#     level=logging.DEBUG,
-#     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-#     filename="../logs/utils.log",
-#     filemode="w",
-#     encoding="utf-8",
-# )
-#
-# # Создаем логеры для различных компонентов программы
-# logger = logging.getLogger("utils")
 
 # Получаем путь к текущему скрипту
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -53,10 +43,10 @@ URL_2 = "https://api.twelvedata.com/price"
 load_dotenv()
 
 # Получаем API-ключ из переменных окружения
-API_KEY = os.getenv("API_KEY")  # В .env есть строка API_KEY=ваш_ключ
+API_KEY = os.getenv("API_KEY")  # В файле ".env" есть строка API_KEY=персональный ключ
 headers = {"apikey": API_KEY}
 
-API_KEY_2 = os.getenv("API_KEY_2")  # В .env есть строка API_KEY_2=ваш_ключ
+API_KEY_2 = os.getenv("API_KEY_2")  # В файле ".env" есть строка API_KEY_2=персональный ключ
 
 
 def time_greeting():
@@ -135,7 +125,7 @@ def get_cards_with_spend(sorded_df: DataFrame) -> list[dict]:
     """
     4. Функция принимает DataFrame и возвращает список карт с расходами
     """
-    card_expenses_transactions = [] # type: ignore
+    card_expenses_transactions = []  # type: ignore
 
     # Проверка на пустой DataFrame
     if sorded_df.empty:

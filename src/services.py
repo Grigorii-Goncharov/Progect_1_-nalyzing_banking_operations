@@ -5,17 +5,6 @@ from typing import Any
 
 import pandas as pd
 
-# logging.basicConfig(
-#     level=logging.DEBUG,
-#     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-#     filename="../logs/services.log",
-#     filemode="w",
-#     encoding="utf-8",
-# )
-
-# Создаем логеры для различных компонентов программы
-# logger_services = logging.getLogger("services")
-
 # Получаем путь к текущему скрипту
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
