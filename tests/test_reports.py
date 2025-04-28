@@ -1,15 +1,17 @@
-import pytest
-from unittest.mock import patch
-import pandas as pd
 import json
-from src.reports import spending_by_category, get_dataframe
+from unittest.mock import patch
+
+import pandas as pd
+import pytest
+
+from src.reports import get_dataframe, spending_by_category
 
 
 # Тест для обработки ошибок в get_dataframe
-@patch('pandas.read_excel')
-@patch('src.reports.logger.error')
+@patch("pandas.read_excel")
+@patch("src.reports.logger.error")
 def test_get_dataframe_error(mock_error, mock_read_excel):
-    # Настраиваем моки для ошибки
+    # Настраиваем MOCK для ошибки
     mock_read_excel.side_effect = Exception("File not found")
 
     # Проверяем что функция вызывает исключение
@@ -24,7 +26,7 @@ def test_get_dataframe_error(mock_error, mock_read_excel):
 
 
 # Тест для пустого DataFrame
-@patch('src.reports.logger.info')
+@patch("src.reports.logger.info")
 def test_spending_by_category_empty_df(mock_logger):
     # Мокаем функцию с пустым DataFrame
     @spending_by_category(date="31.12.2021 16:44:00", category="Супермаркеты")

@@ -1,7 +1,8 @@
-import pytest
-import pandas as pd
 import json
-from unittest.mock import patch
+
+import pandas as pd
+import pytest
+
 from src.services import analyze_cashback
 
 
@@ -22,39 +23,35 @@ correct_test_data = [
     {
         "Дата операции": "01.01.2023 12:00:00",
         "Категория": "Супермаркеты",
-        "Сумма платежа": -1500
+        "Сумма платежа": -1500,
     },
     {
         "Дата операции": "15.01.2023 12:00:00",
         "Категория": "Фастфуд",
-        "Сумма платежа": -1000
+        "Сумма платежа": -1000,
     },
     {
         "Дата операции": "20.01.2023 12:00:00",
         "Категория": "Супермаркеты",
-        "Сумма платежа": -500
-    }
+        "Сумма платежа": -500,
+    },
 ]
 
 test_data_with_income = [
     {
         "Дата операции": "01.01.2023 12:00:00",
         "Категория": "Супермаркеты",
-        "Сумма платежа": -1500
+        "Сумма платежа": -1500,
     },
     {
         "Дата операции": "15.01.2023 12:00:00",
         "Категория": "Зарплата",
-        "Сумма платежа": 50000
-    }
+        "Сумма платежа": 50000,
+    },
 ]
 
 test_data_wrong_format = [
-    {
-        "Дата операции": "2023-01-01",
-        "Категория": "Супермаркеты",
-        "Сумма платежа": -1500
-    }
+    {"Дата операции": "2023-01-01", "Категория": "Супермаркеты", "Сумма платежа": -1500}
 ]
 
 
@@ -63,10 +60,7 @@ def test_analyze_cashback_success(create_temp_excel_file):
     file_path = create_temp_excel_file(correct_test_data, "test_data.xlsx")
     result = analyze_cashback(file_path, 2023, 1)
 
-    expected_result = {
-        "Супермаркеты": 20,
-        "Фастфуд": 10
-    }
+    expected_result = {"Супермаркеты": 20, "Фастфуд": 10}
 
     assert json.loads(result) == expected_result
 
@@ -89,9 +83,7 @@ def test_analyze_cashback_with_income(create_temp_excel_file):
     file_path = create_temp_excel_file(test_data_with_income, "test_data.xlsx")
     result = analyze_cashback(file_path, 2023, 1)
 
-    expected_result = {
-        "Супермаркеты": 15
-    }
+    expected_result = {"Супермаркеты": 15}
 
     assert json.loads(result) == expected_result
 
