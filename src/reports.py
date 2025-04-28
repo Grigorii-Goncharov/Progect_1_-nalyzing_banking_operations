@@ -1,20 +1,36 @@
 import json
 import logging
+import os
 from datetime import datetime, timedelta
 from functools import wraps
 from typing import Callable
 
 import pandas as pd
 
-logger = logging.getLogger(__name__)
+# logging.basicConfig(
+#     level=logging.DEBUG,
+#     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+#     filename="../logs/reports.log",
+#     filemode="w",
+#     encoding="utf-8",
+# )
+#
+# # Создаем логеры для различных компонентов программы
+# logger = logging.getLogger("reports")
+
+# Получаем путь к текущему скрипту
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)  # Создаем папку logs, если её нет
+
 # Настройка обработчиков
-file_handler = logging.FileHandler("../logs/reports.log", "w", "utf-8")
+file_handler = logging.FileHandler("logs/reports.log", "w", "utf-8")
 file_handler.setLevel(logging.DEBUG)  # Убедимся, что обработчик принимает все уровни
 
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)
 
-# Форматтеры
 file_formatter = logging.Formatter(
     "%(asctime)s - %(filename)s - %(funcName)s - %(levelname)s: %(message)s"
 )
@@ -24,12 +40,13 @@ console_formatter = logging.Formatter("%(levelname)s: %(message)s")
 console_handler.setFormatter(console_formatter)
 
 # Добавляем обработчики к логгеру
+logger = logging.getLogger(__name__)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)
 
 
-def spending_by_category(date: str = None, category: str = None) -> Callable:
+def spending_by_category(date: str = None, category: str = None) -> Callable: # type: ignore
     """Декоратор для фильтрации транзакций по категории и дате"""
 
     def decorator(func):
@@ -65,7 +82,7 @@ def spending_by_category(date: str = None, category: str = None) -> Callable:
             result = filtered.to_dict("records")
 
             # Конвертируем в JSON
-            logger.info("Конвертируем в JSON")
+            logger.info("Конвертируем ответ в JSON формат:")
             return json.dumps(result, ensure_ascii=False, indent=2, default=str)
 
         return wrapper

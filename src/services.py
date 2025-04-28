@@ -5,15 +5,30 @@ from typing import Any
 
 import pandas as pd
 
-logger = logging.getLogger(__name__)
+# logging.basicConfig(
+#     level=logging.DEBUG,
+#     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+#     filename="../logs/services.log",
+#     filemode="w",
+#     encoding="utf-8",
+# )
+
+# Создаем логеры для различных компонентов программы
+# logger_services = logging.getLogger("services")
+
+# Получаем путь к текущему скрипту
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)  # Создаем папку logs, если её нет
+
 # Настройка обработчиков
-file_handler = logging.FileHandler("../logs/services.log", "w", "utf-8")
+file_handler = logging.FileHandler("logs/services.log", "w", "utf-8")
 file_handler.setLevel(logging.DEBUG)  # Убедимся, что обработчик принимает все уровни
 
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)
 
-# Форматтеры
 file_formatter = logging.Formatter(
     "%(asctime)s - %(filename)s - %(funcName)s - %(levelname)s: %(message)s"
 )
@@ -23,6 +38,7 @@ console_formatter = logging.Formatter("%(levelname)s: %(message)s")
 console_handler.setFormatter(console_formatter)
 
 # Добавляем обработчики к логгеру
+logger = logging.getLogger(__name__)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)
@@ -80,5 +96,5 @@ def analyze_cashback(file_path: str, year: int, month: int) -> dict[Any, Any] | 
     # Преобразование в словарь
     result = cashback_by_category.to_dict()
 
-    logger.info(f"Анализ завершён. Найдено {len(result)} категорий.")
+    logger.info(f"Анализ завершён. Найдено {len(result)} категорий:")
     return json.dumps(result, ensure_ascii=False, indent=4)

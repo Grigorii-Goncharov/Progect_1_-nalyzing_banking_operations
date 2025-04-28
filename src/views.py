@@ -1,27 +1,24 @@
 import json
 import logging
+import os
 from typing import Any, Dict
 
 from config import PATH_TO_EXCEL, PATH_TO_JSON
-from utils import (
-    get_cards_with_spend,
-    get_currency,
-    get_data_period,
-    get_path_to_file_and_period,
-    get_stock,
-    get_top_transactions,
-    time_greeting,
-)
+from src.utils import (get_cards_with_spend, get_currency, get_data_period, get_path_to_file_and_period, get_stock,
+                       get_top_transactions, time_greeting)
 
-logger = logging.getLogger(__name__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)  # Создаем папку logs, если её нет
+
 # Настройка обработчиков
-file_handler = logging.FileHandler("../logs/views.log", "w", "utf-8")
+file_handler = logging.FileHandler("logs/views.log", "w", "utf-8")
 file_handler.setLevel(logging.DEBUG)  # Убедимся, что обработчик принимает все уровни
 
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)
 
-# Форматтеры
 file_formatter = logging.Formatter(
     "%(asctime)s - %(filename)s - %(funcName)s - %(levelname)s: %(message)s"
 )
@@ -31,6 +28,7 @@ console_formatter = logging.Formatter("%(levelname)s: %(message)s")
 console_handler.setFormatter(console_formatter)
 
 # Добавляем обработчики к логгеру
+logger = logging.getLogger(__name__)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 logger.setLevel(logging.DEBUG)

@@ -1,8 +1,7 @@
 from config import PATH_TO_EXCEL
-from reports import get_dataframe
-from services import analyze_cashback
-from views import main_info
-
+from src.reports import get_dataframe
+from src.services import analyze_cashback
+from src.views import main_info
 if __name__ == "__main__":
     # Вызов функции main_info из модуля views
     print(main_info("2018-04-22 18:16:00"))
